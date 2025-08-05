@@ -1,3 +1,7 @@
-let age: number = 20
-if (age < 50)
-    age += 10
+type Customer = {
+    birthday: Date
+}
+
+function getCustomer(id: number) : Customer | null | undefined {
+return id === 0 ? null : { birthday: new Date() }
+}
