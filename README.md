@@ -16,7 +16,7 @@ let numbers: number[] = [1, 2, 3]
 let numbers: string[] = ['1', '2', '3']
 ```
 
-**Example 2**
+**Example 2** - there is one thing, when usin nums[index].property, it is not neccessary to use optional chaining. but in the case of the object (users[index]) it is neccessary because it is not primitive type.. TS is confused...
 ```
 type User = {
     name: string,
