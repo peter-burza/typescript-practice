@@ -1,6 +1,6 @@
 # Typescript Basics 📝
 
-## New Types
+### New Types
 
 - **any** - can be *any type*. This is not recommended to use
 - **unknow**
@@ -42,15 +42,35 @@ let user: [number, string] = [18, 'Peter']
 
 ### Enum Type
 
-A list od related constants
+A list od related constants. By default it is first - 0, second - 1 atc. Use const before enum to be sure the generated javascript is just simple as can be...
 
+**Example 1**
 ```
-const enum Size { Small = 1, Medium, Large} //Medium'll be 2, Large'll be 3...
-let mySize: Size = Size.Medium
+const enum SeatChoice {
+    AISLE,
+    MIDDLE,
+    WINDOW
+}
+const pbSeat = SeatChoice.MIDDLE
+console.log(pbSeat) 
+```
+
+Result here will be ***1***
+
+It is also possible to specify each part of the list as we want
+
+**Example 2**
+```
+const enum Size { 
+    Small = 1, 
+    Medium = "Medium", 
+    Large = 'XL'
+}
+let mySize: Size = Size.Large
 console.log(mySize) 
 ```
 
-Result here will be ***2***
+Result here will be ***XL***
 
 ### Functions
 
@@ -134,14 +154,13 @@ consoleMsg(card)
 
 ### Union Types
 
-You can set the weight eather number or string.
+A variable could be eather *type1* or *type2*
 
 ```
 let weight: number | string
 ```
 
-For example:
-
+**Example 1**
 ```
 function kgToLbs(weight: number | string): number {
     if (typeof weight === 'number')
@@ -152,6 +171,18 @@ function kgToLbs(weight: number | string): number {
 
 console.log(kgToLbs(10))
 console.log(kgToLbs('10'))
+```
+
+**Example 2**
+```
+const data1: string[] = ['1', '2', '3']
+
+const data2: number[] = [1, 2, 3]
+
+const data3: string[] | number[] = [1, 2, 3]
+const data4: string[] | number[] = ['1', '2', '3']
+
+const data5: (string | number)[] = [1, '2', 3, '4']
 ```
 
 ### Intersection Types
@@ -213,8 +244,6 @@ greet('Michael') // OK
 
 ### Optional Chaining
 
-
-
 We use here an:
 
 > *Optional Property Access Operator - ***?*** 
@@ -245,3 +274,118 @@ return id === 0 ? null : { birthday: new Date() }
 let customer = getCustomer(1)
 console.log(customer?.birthday?.getFullYear)
 ```
+
+### Interfaces
+
+
+**Example 1**
+```
+interface User {
+    readonly dbId: number
+    email: string
+    userId: number
+    googleId?: string
+    startTrial(): string
+    getCoupon(couponName: string, value: number): number
+}
+
+const peter: User = {
+    dbId: 48,
+    email: 'example@example.com',
+    userId: 5649,
+    startTrial: () => {
+        return "right now"
+    },
+    getCoupon: (name: "hhh", value: 45) => {
+        return value
+    }
+}
+```
+
+It is possible to add a property into an existing interface by just declaring it again.
+
+**Example 2**
+```
+interface User {
+    githubToken: string
+}
+```
+
+You can also extend it
+
+**Example 3**
+```
+interface Admin extends User {
+    readonly adminId: number
+}
+```
+
+### Generics
+
+When you want to return the exact type as the passing value type is. You just set the type inside <here>
+
+**Example 1**
+```
+const score: Array<number> = []
+const names: Array<string> = []
+```
+
+Next example you can pass string or number and return string or number. Not usable when want to pass string and get string, and also pass number and get string.
+
+**Example 2**
+```
+function identityOne(val: boolean | number): boolean | number {
+    return val
+}
+```
+
+Any works almost the same, but can give any type and get any type. Not recommended to use.
+
+**Example 3**
+```
+function identityTwo(val: any): any {
+    return val
+}
+```
+
+***Generic Example***
+```
+function identityThree<Type>(val: Type): Type {
+    return val
+}
+
+function identityFour<T>(val: T): T {
+    return val
+}
+
+interface Bottle {
+    height: number,
+    width: number
+}
+
+identityFour<Bottle>({height: 2, width: 5})
+```
+
+Generic type array. 
+
+**Example 4**
+```
+function getSearchProducts<T>(products: T[]): T | undefined {
+    const myIdx = 3 
+    return products[myIdx]
+}
+```
+
+Arrow function with generic settlement
+
+**Example 5**
+```
+const getMoreSearchProducts = <T,>(products: T[]): T | undefined=> {
+    // do some database operations
+    const myIdx = 4
+    return products[myIdx]
+}
+```
+
+> **<T,>** this is commonly used in react to say that this is not jsx/tsx syntax, this is generic.
+> **undefined** is there because of the possibility that the products array could be empty, or the index is not listed in the array
