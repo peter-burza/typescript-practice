@@ -387,5 +387,139 @@ const getMoreSearchProducts = <T,>(products: T[]): T | undefined=> {
 }
 ```
 
-> **<T,>** this is commonly used in react to say that this is not jsx/tsx syntax, this is generic.
+> **<T,>** this is commonly used in react to say that this is not tsx syntax, this is generic.
 > **undefined** is there because of the possibility that the products array could be empty, or the index is not listed in the array
+
+We can also define more types in generic, like so:
+
+**Example 6**
+```
+function anotherFunction<T, U extends Bottle>(val: T, bag: U): object {
+    return {}
+}
+```
+
+### Type Narrowing
+
+In other words, it is making sure that the resulting value type is knowable in every cases of the code scenarious.
+
+**Example 1**
+```
+function detectType(val: number | string ) {
+    if (typeof val === "string")
+        return val.toLowerCase()
+
+    return val + 3
+}
+
+function provideId(id: string | null) {
+    if (!id) {
+        console.log("please provide ID");
+        return
+    }
+    id.toLowerCase()
+}
+```
+
+Here you make sure that the id could be also null, so you return from the function if it really is. But you also have to tell TS that it is possible so you write **string | null**.
+
+#### in
+
+Checking if is something in interface
+
+**Example 1**
+```
+interface User {
+    name: string,
+    email: string
+}
+
+interface Admin extends User {
+    isAdmin: boolean
+}
+
+function isAdminAccount(account: User | Admin) {
+    if ("isAdmin" in account)
+        return account.isAdmin
+    return false
+}
+```
+
+But also checking if is something in the object
+
+**Example 2**
+```
+const myBottle = { material: "glass", volume: 500 };
+
+console.log("volume" in myBottle); // true
+console.log("color" in myBottle);  // false
+```
+
+#### instanceof
+
+**Example 1**
+```
+function func(x: Date | string) {
+    if (x instanceof Date) 
+        return x.getDate()
+    return x.toUpperCase()
+}
+```
+
+### Descriminated Union & Exhaustiveness Checking with never
+
+Descriminated Union:
+
+**Example 1**
+```
+interface Circle {
+    kind: "circle"
+    radius: number
+}
+
+interface Square {
+    kind: "square"
+    side: number
+}
+
+interface Rectangular {
+    kind: "square"
+    length: number
+    width: number
+}
+
+type Shape = Circle | Square
+
+function getShapeArea(shape: Shape): number {
+    if (shape.kind === "circle")
+        return Math.PI * shape.radius ** 2
+    return shape.side * shape.side
+}
+```
+
+Never Check:
+
+This pattern is often used inside a switch statement to ensure all cases are handled.
+
+**Example 2**
+```
+function getArea(shape: Shape) {
+    switch(shape.kind) {
+        case "circle":
+            return Math.PI * shape.radius ** 2
+        case "square":
+            return shape.side * shape.side
+        case "rectangular":
+            return shape.length * shape.width
+        
+        default:
+            const _defaultForShape: never = shape
+            return _defaultForShape
+    }
+}
+```
+
+When you forgot to include some of the interfaces to check in the function, the default case will yell at you with: "Type 'Rectangular' is not assignable to type 'never'."
+It is because this line
+> const _defaultForShape: never = shape
+is trying to assign a variable shape to a type never. In TypeScript, never means “this value should never occur.”

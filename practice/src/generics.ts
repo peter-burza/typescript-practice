@@ -35,3 +35,8 @@ const getMoreSearchProducts = <T,>(products: T[]): T | undefined => {
     const myIdx = 4
     return products[myIdx]
 }
+
+
+function anotherFunction<T, U extends Bottle>(val: T, bag: U): object {
+    return {}
+}
